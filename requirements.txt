@@ -2,3 +2,6 @@ numpy
 matplotlib
 scipy
 scikit-learn
+datetime
+openpyxl
+xlrd
