@@ -82,6 +82,17 @@ $$
 - 数据集越大，越能反应数据的真实分布（ImageNet 数百万张图片）
 - 数据集的质量很重要
 
+## About scikit-learn
+
+scikit-learn 是基于 Python 语言的机器学习工具
+
+- 简单高效的数据挖掘和数据分析工具
+- 可供大家在各种环境中重复使用
+- 建立在 NumPy ，SciPy 和 matplotlib 上
+- 开源，可商业使用 - BSD 许可证
+
+**扩展阅读** 【[sklearn 官方文档中文翻译](https://www.cntofu.com/book/170/index.html)】,【[sklearn 中文文档](http://www.scikitlearn.com.cn/)】
+
 ## Surprised Learning
 
 利用一组已知类别的样本调整算法的参数，使其达到所要求性能的过程，也称为监督训练或有教师学习

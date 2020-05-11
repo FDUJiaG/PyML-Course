@@ -13,6 +13,7 @@ warnings.filterwarnings("ignore", category=Warning)
 # generate dataset
 X, y = mglearn.datasets.make_forge()
 # plot dataset
+plt.figure(figsize=(10, 5))
 mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
 plt.legend(["Class 0", "Class 1"], loc=4)
 plt.xlabel("First feature")
@@ -20,6 +21,7 @@ plt.ylabel("Second feature")
 plt.show()
 print("X.shape:", X.shape)
 
+plt.figure(figsize=(10, 5))
 X, y = mglearn.datasets.make_wave(n_samples=40)
 plt.plot(X, y, 'o')
 plt.ylim(-3, 3)
