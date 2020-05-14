@@ -435,7 +435,7 @@ plt.fill_between(x, np.abs(x) < 0.5, c, c > 0.5, color="green", alpha=0.25)
 - 当 `np.abs(x) < 0.5` 为 `True`（即值为 `1`），从 $y$ 轴的 $1$（满足 $c>0.5$ ）开始往两边填充（当然 $x$ 轴上是 $-0.5$ 到 $0.5$ 之间的区域），此时填充的也就是图上方的两小块
 - 当 `np.abs(x) >= 0.5` 为 `False`（即值为 `0`），从 $y$ 轴的 $0$ 开始向上填充，当然只填充 $c>0.5$ 的区域，也就是图中那两块大的对称区域
 
-![Sin Cos Plot](figures/l03/l03-Sin-Cos-Plot.png)
+![Sin Cos Plot](figures/l04/l04-Sin-Cos-Plot.png)
 
 ### Style
 
@@ -476,7 +476,7 @@ In [67]: plt1()
 In [68]: plt.style.use('default')         # 重回默认风格
 ```
 
-![Sin Cos Seaborn Dark](figures/l03/l03-Sin-Cos-Seaborn-Dark.png)
+![Sin Cos Seaborn Dark](figures/l04/l04-Sin-Cos-Seaborn-Dark.png)
 
 ### Many types of Figures
 
@@ -561,7 +561,7 @@ def plt2():
     plt.show()      # 显示
 ```
 
-![Many kind of Plot](figures/l03/l03-Many-kind-of-Plot.png)
+![Many kind of Plot](figures/l04/l04-Many-kind-of-Plot.png)
 
 ## Scipy
 
@@ -677,7 +677,7 @@ plt.legend()
 plt.show()
 ```
 
-![SciPy Optimize](figures/l03/l03-SciPy-Optimize.png)
+![SciPy Optimize](figures/l04/l04-SciPy-Optimize.png)
 
 显然这是一个非凸优化问题，对于这类函数得最小值问题一般是从给定的初始值开始进行一个梯度下降，在 optimize 中一般使用 `bfgs` 算法
 
@@ -785,7 +785,7 @@ pl.legend()
 pl.show()
 ```
 
-![SciPy Optimize Leastsq](figures/l03/l03-SciPy-Optimize-Leastsq.png)
+![SciPy Optimize Leastsq](figures/l04/l04-SciPy-Optimize-Leastsq.png)
 
 输出结果
 
@@ -1385,7 +1385,7 @@ Out[79]: <matplotlib.axes._subplots.AxesSubplot at 0x11b166e90>
 In [80]: show()
 ```
 
-![Pandas-Plot](figures/l03/l03-Pandas-Plot.png)
+![Pandas-Plot](figures/l04/l04-Pandas-Plot.png)
 
 #### Files
 

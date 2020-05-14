@@ -8,15 +8,15 @@
 
 ### TIOBE Index for April 2020
 
-![TIOBE-Index-for-April-2020](figures/l02/l02-1-TIOBE-Index-for-April-2020.jpg)
+![TIOBE-Index-for-April-2020](figures/l02/l02-TIOBE-Index-for-April-2020.jpg)
 
 ### Very Long Term History
 
-![Very-Long-Term-History](figures/l02/l02-1-Very-Long-Term-History.jpg)
+![Very-Long-Term-History](figures/l02/l02-Very-Long-Term-History.jpg)
 
 ### Programming Language Hall of Fame 
 
-![Programming-Language-Hall-of-Fame](figures/l02/l02-1-Programming-Language-Hall-of-Fame.jpg)
+![Programming-Language-Hall-of-Fame](figures/l02/l02-Programming-Language-Hall-of-Fame.jpg)
 
 Python 是一门优秀的综合语言， Python 的宗旨是简明、优雅、强大，在人工智能、云计算、金融分析、大数据开发、WEB开发、自动化运维、测试等方向应用广泛，已是全球第 4 大最流行的语言
 
@@ -41,7 +41,7 @@ Anaconda 安装包可以到 [官网](https://www.anaconda.com/products/individua
 
 **注意** 我们选择 Python 3.X 的版本（比如目前是 3.7）
 
-![Anaconda-Installers](figures/l02/l02-1-Anaconda-Installers.jpg)
+![Anaconda-Installers](figures/l02/l02-Anaconda-Installers.jpg)
 
 下载之后，除了想修改安装路径以外，基本都可以选择默认设置，一路 “Next”，不过，如果遇到如下选项，记得勾选
 
@@ -94,7 +94,7 @@ custom_channels:
 
 之后页面会根据系统自动进入相应的下载页面
 
-![Download-Pycharm](figures/l02/l02-1-Download-Pycharm.jpg)
+![Download-Pycharm](figures/l02/l02-Download-Pycharm.jpg)
 
 Professional 表示专业版，功能会更齐全一些，Community 是社区版，推荐安装社区版，因为是免费使用的，专业版是收费的，一年一千多，土豪请随意
 
