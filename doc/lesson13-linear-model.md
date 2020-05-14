@@ -1,6 +1,6 @@
 # Linear Models
 
-## Linear Regression
+## Linear Models for Regression
 
 ### Regression Problem
 
@@ -671,4 +671,277 @@ plt.ylabel("Coefficient magnitude")
   - 在实践中，这种结合的效果最好
   - 代价是要调节两个参数，一个用于 $L_1$ 正则化，一个用于 $L_2$ 正则化
 
-  
+## Linear Models for Classification
+
+线性模型也可用于分类问题。我们首先来看二分类。我们可以利用下面的公式预测
+
+$$
+\hat y = w[0]* x[0]+w[1]* x[1]+\cdots +w[p]*x[p] +b >0
+$$
+
+这个公式与线性回归的公式非常相似，但我们没有返回特征的加权求和，而是为预测设置了阈值（$0$），如果函数值 $<0$ ，我们就预测类别 $-1$，如果函数值 $>0$，我们就预测类别 $+1$，对于几乎所有用于分类的线性模型，这个预测规则都是通用的，同样，有很多不同的方法来找出系数（$w$）和截距（$b$）
+
+对于用于回归的线性模型，输出 $\hat y$ 是特征的线性函数，是直线、平面或超平面（对于更高维的数据集），对于用于分类的线性模型，决策边界是输入的线性函数，换句话说，（二元）线性分类器是利用直线、平面或超平面来分开两个类别的分类器
+
+学习线性模型有很多种算法，这些算法的区别在于以下两点
+
+1. 系数和截距的特定组合对训练数据拟合好坏的度量方法
+1. 是否使用正则化，以及使用哪种正则化方法
+
+不同的算法使用不同的方法来度量 “对训练集拟合好坏”，由于数学上的技术原因，不可能调节 $w$ 和 $b$ 使得算法产生的误分类数量最少，对于我们的目的，以及对于许多应用而言，上面第一点（称为损失函数）的选择并不重要。
+
+最常见的两种线性分类算法是 Logistic 回归（Logistic Regression，在 `linear_model.LogisticRegression` 中实现）和线性支持向量机（Linear Support Vector Machine，在 `svm.LinearSVC` 中实现，SVC 代表支持分类器），Logistic Regression 尽管含有 Regression 字样，但却是一种分类算法，而不是回归算法，不应该与 Linear Regression 混淆
+
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+
+X, y = mglearn.datasets.make_forge()
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 3))
+
+for model, ax in zip([LinearSVC(), LogisticRegression()], axes):
+    clf = model.fit(X, y)
+    mglearn.plots.plot_2d_separator(clf, X, fill=False, eps=0.5,
+                                    ax=ax, alpha=.7)
+    mglearn.discrete_scatter(X[:, 0], X[:, 1], y, ax=ax)
+    ax.set_title(clf.__class__.__name__)
+    ax.set_xlabel("Feature 0")
+    ax.set_ylabel("Feature 1")
+axes[0].legend()
+```
+
+![Linear Classification Eg Froge](figures/l13/l13-Linear-Classification-Eg-Froge.png)
+
+在上述图中，forge 数据集的第一个特征位于 x 轴，第二个特征位于 y 轴
+
+图中分别展示了 `LinearSVC` 和 `LogisticRegression` 得到的决策边界，都是直线，将顶部归为类别 1 的区域和底部归为类别 0 的区域分开了，换句话说，对于每个分类器而言，位于黑线上方的新数据点都会被划为类别 1，而在黑线下方的点都会被划为类别 0，两个模型得到了相似的决策边界
+
+注意，两个模型中都有两个点的分类是错误的，两个模型默认使用 $L_2$ 正则化，就像 Ridge 回归所做的那样
+
+### Regularization in Linear Classification
+
+对于 `LogisticRegression` 和 `LinearSVC`，决定正则化强度的权衡参数叫作 `C`，`C` 值越大，对应的正则化越弱
+
+换句话说，如果参数 `C` 值较大，那么 `LogisticRegression`和 `LinearSVC` 将尽可能将训练集拟合到最好，而如果 `C` 值较小，那么模型更强调使系数向量（`w`）接近于 `0`
+
+参数 `C` 的作用还有另一个有趣之处，较小的 `C` 值可以让算法尽量适应“大多数”数据点，而较大的 `C` 值强调每个数据点都分类正确的重要性
+
+```python
+mglearn.plots.plot_linear_svc_regularization()
+```
+
+![Linear Classification Regularization](figures/l13/l13-Linear-Classification-Regularization.png)
+
+在上述左 1 图中，`C` 值很小，对应强正则化，大部分属于类别 0 的点都位于底部，大部分属于类别 1 的点都位于顶部，强正则化的模型会选择一条相对水平的线，有两个点分类错误
+
+在中间的图中，`C` 值稍大，模型更关注两个分类错误的样本，使决策边界的斜率变大
+
+最后，在右侧的图中，模型的 `C` 值非常大，使得决策边界的斜率也很大，选择模型对类别 0 中所有点的分类都是正确的，但类别 1 中仍有一个点分类错误，这是因为对这个数据集来说，不可能用一条直线将所有点都分类正确，右侧图中的模型尽量使所有点都分类正确，但可能无法掌握类别的整体分布，换句话说，这个模型很可能过拟合
+
+与回归的情况类似，用于分类的线性模型在低维空间中看起来可能非常受限，决策边界只能是直线或平面，同样，在高维空间中，用于分类的线性模型变得非常强大，当考虑更多特征时，避免过拟合变得越来越重要
+
+```python
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+
+cancer = load_breast_cancer()
+X_train, X_test, y_train, y_test = train_test_split(
+    cancer.data, cancer.target, stratify=cancer.target, random_state=42)
+logreg = LogisticRegression().fit(X_train, y_train)
+print("Training set score: {:.3f}".format(logreg.score(X_train, y_train)))
+print("Test set score: {:.3f}".format(logreg.score(X_test, y_test)))
+```
+
+**Output**
+
+```console
+Training set score: 0.955
+Test set score: 0.951
+```
+
+`C=1` 的默认值给出了相当好的性能，在训练集和测试集上都达到 95% 的精度，但由于训练集和测试集的性能非常接近，所以模型很可能是欠拟合的。我们尝试增大 `C` 来拟合一个更灵活的模型
+
+```python
+logreg100 = LogisticRegression(C=100).fit(X_train, y_train)
+print("Training set score:{:.3f}".format(logreg100.score(X_train, y_train)))
+print("Test set score:{:.3f}".format(logreg100.score(X_test, y_test)))
+```
+
+**Output**
+
+```console
+Training set score:0.953
+Test set score:0.965
+```
+
+使用 `C=100` 可以得到更高的训练集精度，也得到了稍高的测试集精度，这也证实了我们的直觉，即更复杂的模型应该性能更好
+
+```python
+logreg001 = LogisticRegression(C=0.01).fit(X_train, y_train)
+print("Training set score:{:.3f}".format(logreg001.score(X_train, y_train)))
+print("Test set score:{:.3f}".format(logreg001.score(X_test, y_test)))
+```
+
+**Output**
+
+```console
+Training set score:0.934
+Test set score:0.930
+```
+
+当我设置 `C=0.01` 时，发现模型在训练集和测试集上的效果相比默认情况都有所下降，说明出现了欠拟合的情况
+
+
+
+```python
+# plt.figure(figsize=(10, 6))
+# plt.subplots_adjust(top=0.94, bottom=0.33)
+plt.plot(logreg.coef_.T, 'o', label="C=1")
+plt.plot(logreg100.coef_.T, '^', label="C=100")
+plt.plot(logreg001.coef_.T, 'v', label="C=0.001")
+plt.xticks(range(cancer.data.shape[1]), cancer.feature_names, rotation=90)
+xlims = plt.xlim()
+plt.hlines(0, xlims[0], xlims[1])
+plt.xlim(xlims)
+plt.ylim(-5, 5)
+plt.xlabel("Feature")
+plt.ylabel("Coefficient magnitude")
+plt.legend()
+# plt.show()
+```
+
+![Logistic Diff C](figures/l13/l13-Logistic-Diff-C.png)
+
+Logistic Regression 模型默认应用 $L_2$ 正则化，更强的正则化使的系数更趋向于 0，但系数永远不会正好等于0
+
+进一步观察图像，还可以第3个系数那里发现有趣之处，这个系数是 “平均周长”（mean perimeter），`C=1` 和 `C=100` 时这个系数为负，但 `C=0.001` 时该系数为正，且其绝对值比 `C=1` 时的还要大，在解释这样的模型时，系数可以告诉我们某个特征与哪个类别有关
+
+例如，人们可能会认为高 “纹理错误”（texture error）特征与 “恶性” 样本有关，但 “平均周长” 系数的正负号发生变化，说明较大的 “平均周长” 特征被当作 “良性” 指标或 “恶性” 指标，具体取决于我们考虑的是哪个模型，这也说明，对线性模型系数的解释应该始终持保留态度
+
+如果想要一个可解释性更强的模型，使用 $L_1$ 正则化可能更好，因为它约束模型只使用少数几个特征
+
+```python
+for C, marker in zip([0.001, 1, 100], ['o', '^', 'v']):
+    lr_l1 = LogisticRegression(C=C, solver='liblinear', penalty="l1").fit(X_train, y_train)
+    print("Training accuracy of l1 logreg with C={:.3f}: {:.2f}".format(
+          C, lr_l1.score(X_train, y_train)))
+    print("Test accuracy of l1 logreg with C={:.3f}: {:.2f}".format(
+          C, lr_l1.score(X_test, y_test)))
+    plt.plot(lr_l1.coef_.T, marker, label="C={:.3f}".format(C))
+
+plt.xticks(range(cancer.data.shape[1]), cancer.feature_names, rotation=90)
+xlims = plt.xlim()
+plt.hlines(0, xlims[0], xlims[1])
+plt.xlim(xlims)
+plt.xlabel("Feature")
+plt.ylabel("Coefficient magnitude")
+
+plt.ylim(-5, 5)
+plt.legend(loc=3)
+```
+
+**Output**
+
+```console
+Training accuracy of l1 logreg with C=0.001: 0.91
+Test accuracy of l1 logreg with C=0.001: 0.92
+Training accuracy of l1 logreg with C=1.000: 0.96
+Test accuracy of l1 logreg with C=1.000: 0.96
+Training accuracy of l1 logreg with C=100.000: 0.99
+Test accuracy of l1 logreg with C=100.000: 0.98
+```
+
+![Logistic L1 Diff C](figures/l13/l13-Logistic-L1-Diff-C.png)
+
+我们发现线性回归和 2 分类问题有许多的相似之处，在回归中，模型的区别来自于惩罚项，这将影响特征是被全部选取还是部分使用
+
+### Linear Models for Multiple Classification
+
+将二分类算法推广到多分类算法的一种常见方法是 “一对其余”（one-vs.-rest）方法，在 “一对其余” 方法中，对每个类别都学习一个二分类模型，将这个类别与所有其他类别尽量分开，这样就生成了与类别个数一样多的二分类模型，在测试点上运行所有二分类器来进行预测，在对应类别上分数最高的分类器 “胜出”，将这个类别标签返回作为预测结果
+
+每个类别都对应一个二类分类器，这样每个类别都有一个系数（$w$）向量与一个截距（$b$）
+我们将 “一对多余” 法应用在一个简单的三分类数据集上，我们用到了一个二维数据集，每个类别的数据都是从一个高斯分布中采样得出的
+
+```python
+from sklearn.datasets import make_blobs
+
+X, y = make_blobs(random_state=42)
+mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
+plt.xlabel("Feature 0")
+plt.ylabel("Feature 1")
+plt.legend(["Class 0", "Class 1", "Class 2"])
+```
+
+![Two Dimensional Dataset 3 Class](figures/l13/l13-Two-Dimensional-Dataset-3-Class.png)
+
+在上面的数据集上训练一个 `LinearSVC()` 分类器
+
+```python
+linear_svm = LinearSVC().fit(X, y)
+print("Coefficient shape: ", linear_svm.coef_.shape)
+print("Intercept shape: ", linear_svm.intercept_.shape)
+```
+
+**Output**
+
+```console
+Coefficient shape:  (3, 2)
+Intercept shape:  (3,)
+```
+
+我们看到，`coef_` 的形状是 `(3,2)`，说明 `coef_` 每行包含三个类别之一的系数向量，每列包含某个特征（这个数据集有 2 个特征）对应的系数值，现在 `intercetp_` 是一维数组，保存每个类别的截距，我们将这 3 个二分类器给出的直线可视化
+
+```python
+mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
+line = np.linspace(-15, 15)
+for coef, intercept, color in zip(linear_svm.coef_, linear_svm.intercept_,
+                                  mglearn.cm3.colors):
+    plt.plot(line, -(line * coef[0] + intercept) / coef[1], c=color)
+plt.ylim(-10, 15)
+plt.xlim(-10, 8)
+plt.xlabel("Feature 0")
+plt.ylabel("Feature 1")
+plt.legend(['Class 0', 'Class 1', 'Class 2', 'Line class 0', 'Line class 1',
+            'Line class 2'], loc=(1.01, 0.3))
+```
+
+![Linear Decision Boundaris](figures/l13/l13-Linear-Decision-Boundaris.png)
+
+可以看到，训练集中所有属于类别 0 的点都在类别 0 对应的直线上方，这说明它们位于这个二分类器属于 “类别0” 的那一侧，属于类别 0 的点位于与类别 2 对应的直线上方，这说明它们被类别 2 的二分类器划为 “其余”；属于类别 0 的点位于与类别 1 对应的直线左侧，这说明类别 1 的二元分类器将它们划为 “其余”；因此，这一区域的所有点都会被最终分类器划为类别 0（类别 0 的分类器的分类置信方程的结果大于 0，其他两个类别对应的结果小于 0）
+但图像中间的三角形区域属于哪一个类别呢，3 个分类器都将这一区域内的点划为 “其余”，这里的点应该应该划归到哪一个类别呢？答案是分类方程结果最大的那个类别，即最接近的那条线对应的类别
+
+```python
+mglearn.plots.plot_2d_classification(linear_svm, X, fill=True, alpha=.7)
+mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
+line = np.linspace(-15, 15)
+for coef, intercept, color in zip(linear_svm.coef_, linear_svm.intercept_,
+                                  mglearn.cm3.colors):
+    plt.plot(line, -(line * coef[0] + intercept) / coef[1], c=color)
+plt.legend(['Class 0', 'Class 1', 'Class 2', 'Line class 0', 'Line class 1',
+            'Line class 2'], loc=(1.01, 0.3))
+plt.xlabel("Feature 0")
+plt.ylabel("Feature 1")
+```
+
+![Linear Muticlass Decision](figures/l13/l13-Linear-Muticlass-Decision.png)
+
+## Strengths, Weaknesses and Parameters in Linear Models
+
+- 线性模型的主要参数是正则化参数，在回归模型中叫做 `alpha`，在 LinearSVC 和 LogisticRegression 中叫做 `C`
+    - `alpha` 值较大或 `C` 值较小，说明模型比较简单，特别是对于回归模型而言，调节这些参数非常重要
+    - 通常在对数尺度上对 `C` 和 `alpha` 进行搜索
+
+- 你还需要确定的是用 $L_1$ 正则化还是 $L_2$ 正则化
+    - 如果你假定只有几个特征是真正重要的，那么你应该用 $L_1$ 正则化，否则应默认使用 $L_2$ 正则化
+    - 如果模型的可解释性是很重要的话，使用 $L_1$ 也会有帮助
+    - 由于 $L_1$ 只用到几个特征，所以更容易解释哪些特征对模型是重要的，以及这些特征的作用
+
+- 线性模型的训练速度非常快，预测速度也很快，这种模型可以推广到非常大的数据集，对稀疏数据也很有效
+    - 如果数据包包含数十万甚至上百万个样本，可能需要研究如何使用 LogisticRegression 和 Ridge 模型的 `solver='sag'` 选项，在处理大型数据时，这一选项比默认值要更快
+    - 其它选项还有 `SGDClassifier` 和 `SGDRegressor` 类，它们对线性模型实现了可扩展性更强的版本
+- 线性模型的另一个优点在于，利用我们之前见过的用于回归和分类的公式，理解如何进行预测是相对比较容易的
+- 不幸的是，往往并不完全清楚系数为什么是这样的，如果数据集中包含高度相关的特性，这一问题尤为突出，可能很难对系数做出解释
+- 如果特征数量大于样本数量，线性模型的表现通常都很好
+    - 常用于非常大的数据集，只是因为训练其他模型并不可行
+    - 但在更低维的空间中，其他模型的泛化性能可能更好
