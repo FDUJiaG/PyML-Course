@@ -83,7 +83,19 @@ $$
 
 其中 $\alpha$ 为学习率， $:=$ 表示使用右式的值替换 $\theta_i$ 原有的值
 
-对于 **线性回归**，我们更新 $\theta_i$ 的方式为
+实际上，梯度下降的推导应该为
+
+$$
+\begin{aligned}
+\frac{\partial}{\partial\theta_j} J(\theta)
+& = \frac{\partial}{\partial\theta_j}
+	   \left[\frac1{2m}\sum\limits_{i=1}^m(\theta^\mathrm{T}x^{(i)}−y^{(i)})^2 \right] \\
+& = \frac1m\sum\limits_{i=1}^m(\theta^\mathrm{T}x^{(i)}−y^{(i)}) x_j^{(i)} \\
+& = \frac1m\sum\limits_{i=1}^m[h_\theta(x^{(i)})-y^{(i)}]x_j^{(i)}
+\end{aligned}
+$$
+
+但对于 **线性回归**，我们更新 $\theta_i$ 的方式可以由正规方程得到
 
 $$
 \theta:=\theta-\alpha\frac1mX^\mathrm{T}(X\theta-y)
@@ -101,7 +113,7 @@ $$
 $$
 \theta=(X^\mathrm{T}X)^{-1}\cdot X^\mathrm{T}y
 $$
-在使用时 **正规方程** 有一定的限制，比 $X^\mathrm{T}X$ 矩阵需要是可逆的
+在使用时 **正规方程** 有一定的限制，比如 $X^\mathrm{T}X$ 矩阵需要是可逆的
 
 那么有了直接求解问题的方法，为什么我们还需要梯度下降的概念呢？因为梯度下降方法更具有广泛性，可以用于很多问题的求解，比如非线性的 **损失函数**
 
