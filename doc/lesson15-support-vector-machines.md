@@ -520,7 +520,7 @@ axes[0, 0].legend(["class 0", "class 1", "sv class 0", "sv class 1"],
 
 ![SVM C Gamma](figures/l15/l15-SVM-C-Gamma.png)
 
-- 在例子中，SVM 给出了非常平滑且非线性的（不是直线）的边界，这里调节了两个参数, `C` 和 `gamma`
+- 在例子中，SVM 给出了非常平滑且非线性的（不是直线）的边界，这里调节了两个参数， `C` 和 `gamma`
     - `gamma` 参数用于控制高斯核的宽度，它决定了点与点之间 “靠近” 是指多远的距离
     - `C` 参数是正则化参数，与线性模型中用到的类似，它限制每个点的重要性（或者确切地说，每个点的 `dual_coef_`）
 - 从左到右，我们将参数 `gamma` 的值从 `0.1` 增加到 `10`
@@ -572,7 +572,7 @@ plt.yscale("log")
 
 ### Preprocessing Data for SVMs
 
-解决这个问题的一种方法是对每个特征进行缩放，使其大致都位于同一范围，核 SVM 常用的缩放方法就是将所有特征缩放到 0 和 1 之间
+解决这个问题的一种方法是对每个特征进行缩放，使其大致都位于同一范围，核 SVM 常用的缩放方法就是将所有特征缩放到 $0$ 和 $1$ 之间
 
 ```python
 from sklearn.model_selection import train_test_split
