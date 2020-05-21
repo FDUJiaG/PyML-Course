@@ -41,8 +41,8 @@ Sigmoid 函数处处可导，导数很简洁
 
 $$
 \begin{aligned}
-S'(x) &= \left( \frac{1}{1+e^{-1}} \right)' = -\frac{(1+e^{-1})'}{(1+e^{-1})^2}
-    = -\frac{- e^{-1}}{(1+e^{-1})^2} = \frac{1}{1+e^{-1}} \cdot \frac{1+e^{-1}-1}{1+e^{-1}} \\
+S'(x) &= \left( \frac{1}{1+e^{-x}} \right)' = -\frac{(1+e^{-x})'}{(1+e^{-x})^2}
+    = -\frac{- e^{-x}}{(1+e^{-x})^2} = \frac{1}{1+e^{-x}} \cdot \frac{1+e^{-x}-1}{1+e^{-x}} \\
     &= S(x)(1−S(x))
 \end{aligned}
 $$
