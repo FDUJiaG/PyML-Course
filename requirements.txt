@@ -7,3 +7,4 @@ datetime
 openpyxl
 xlrd
 mglearn
+graphviz
