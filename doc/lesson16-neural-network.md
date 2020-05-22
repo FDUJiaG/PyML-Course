@@ -294,3 +294,407 @@ $$
 $$
 -\delta\leq\Theta_{ij}^l\leq\delta
 $$
+
+## Neural Networks (Deep Learning)
+
+虽然深度学习在许多机器学习应用中都有巨大的潜力，但深度学习算法往往只适用于特定的使用场景，这里讨论一种相对简单的方法，即用于分类和回归的多层感知机（MultiLayer Perceptron，MLP），它可以作为研究更复杂的深度学习方法的起点，MLP 也被称为（普通）前馈神经网络，有以下几个特点
+
+- 可以构建非常复杂的模型，特别是对于大型数据集而言
+- 对数据缩放敏感，对参数选取敏感
+- 大型网络需要很长的训练时间
+
+### The Neural Network Model
+
+#### Import Module
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import mglearn
+
+# Ignore Warnings
+import warnings
+warnings.filterwarnings("ignore", category=Warning)
+```
+
+#### Model Diagram
+
+MLP也可被视为广义的线性模型，执行多层处理后得到结论，回顾我们的线性模型
+
+$$
+\hat y = w[0]+w[1]* x[1] + \cdots + w[p]* x[p] + b
+$$
+
+我们将线性模型可视化如下
+
+```python
+display(mglearn.plots.plot_logistic_regression_graph())
+```
+
+![Logistic Regression](figures/l16/l16-Logistic-Regression.svg)
+
+上图中左边的每个结点代表一个输入特征，连线代表学到的系数，右边的结点代表输出，是输入的加权求和
+
+在MLP中，多次重复这个计算加权求和的过程，首先计算代表中间过程的 **隐单元（hidden unit）**，然后计算这些隐单元的加权求和并得到最终结果
+
+```python
+display(mglearn.plots.plot_single_hidden_layer_graph())
+```
+
+![Single Hidden Layer](figures/l16/l16-Single-Hidden-Layer.svg)
+
+这个模型需要学习更多的系数（也叫作权重），在每个输入与每个隐单元（隐单元组成了隐层）之间有一个系数，在每个隐单元与输出之间也有一个系数
+
+从数学的角度看，计算一系列加权求和与只计算一个加权求和是完全相同的，因此，为了让这个模型真正比线性模型更为强大，我们还需要一个技巧，在计算完成每个隐单元的加权求和之后，对结果再应用一个非线性激活函数，除了前面提到的 `sigmoid` 函数，比如 **校正非线性**（rectifying nonlinearity，也叫校正线性单元或 relu）函数或 **正切双曲**（tangens hyperbolicus，tanh）函数，然后将这个函数的结果用于加权求和，计算得到输出 $\hat y$ ，这两个非线性函数使得神经网络可以学习比线性模型复杂的多的函数，这两个函数的可视化效果如下图
+
+```python
+line = np.linspace(-3, 3, 100)
+plt.plot(line, np.tanh(line), label="tanh")
+plt.plot(line, np.maximum(line, 0), label="relu")
+plt.legend(loc="best")
+plt.xlabel("x")
+plt.ylabel("relu(x), tanh(x)")
+```
+
+![ReLU Tanh](figures/l16/l16-ReLU-Tanh.png)
+
+对于上上图的小型神经网络，计算回归问题的 $\hat y$ 的完整公式如下（使用 $tanh$ 非线性）
+
+$$
+\begin{aligned}
+h[0] &=tanh(w[0,0] * x[0]+w[1,0] * x[1]+w[2,0] * x[2]+w[3,0] * x[3]+b[0]) \\
+h[1] &=tanh(w[0,0] * x[0]+w[1,0] * x[1]+w[2,0] * x[2]+w[3,0] * x[3]+b[1]) \\
+h[2] &=tanh(w[0,0] * x[0]+w[1,0] * x[1]+w[2,0] * x[2]+w[3,0] * x[3]+b[2]) \\
+\hat y &=v[0] * h[0]+v[1] * h[1]+v[2] * h[2]+b
+\end{aligned}
+$$
+
+其中 $w$ 是输入 $x$ 与隐藏层 $h$ 之间的权重，$v$ 是隐藏层 $h$ 与输出 $y$ 之间的权重，权重 $w$ 和 $v$ 要学习得到，$x$ 是输入特征，$y$ 是计算得到的输出，$h$ 是计算的中间结果，需要用户设置的一个重要参数是隐层中的结点个数，对于非常小或非常简单的数据集，这个值可以小到 `10`；对于非常复杂的数据，这个值可以达到 `10000` ，也可以添加多个隐层，如下图所示
+
+```python
+mglearn.plots.plot_two_hidden_layer_graph()
+```
+
+![MLP 2 Layer](figures/l16/l16-MLP-2-Layer.svg)
+
+这些由很多计算层组成的大型神经网络，正是术语 “深度学习” 的灵感来源
+
+#### Tuning Neural Networks
+
+我们将 `MLPClassifier` 应用到 two_moons 数据集上
+
+- 默认情况
+
+    ```python
+    from sklearn.neural_network import MLPClassifier
+    from sklearn.datasets import make_moons
+    from sklearn.model_selection import train_test_split
+
+    X, y = make_moons(n_samples=100, noise=0.25, random_state=3)
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y,
+                                                        random_state=42)
+
+    mlp = MLPClassifier(solver='lbfgs', random_state=0).fit(X_train, y_train)
+    mglearn.plots.plot_2d_separator(mlp, X_train, fill=True, alpha=.3)
+    mglearn.discrete_scatter(X_train[:, 0], X_train[:, 1], y_train)
+    plt.xlabel("Feature 0")
+    plt.ylabel("Feature 1")
+    ```
+
+    ![NN 100 Hiddens 2 Moons](figures/l16/l16-NN-100-Hiddens-2-Moons.png)
+
+    - 从上图我们可以看到，神经网络学到的决策边界完全是非线性的，但相对平滑
+    - 默认情况下，MLP 使用 `100` 个隐结点，这对于这个小型数据集来说已经相当多了，我们可以减少其数量（从而降低了模型复杂度），但仍然可以得到很好的结果
+
+- 单隐藏层 `10` 个隐藏节点的情况
+
+    ```python
+    mlp = MLPClassifier(solver='lbfgs', random_state=0, hidden_layer_sizes=[10])
+    mlp.fit(X_train, y_train)
+    mglearn.plots.plot_2d_separator(mlp, X_train, fill=True, alpha=.3)
+    mglearn.discrete_scatter(X_train[:, 0], X_train[:, 1], y_train)
+    plt.xlabel("Feature 0")
+    plt.ylabel("Feature 1")
+    ```
+
+    ![NN 10 Hiddens 2 Moons](figures/l16/l16-NN-10-Hiddens-2-Moons.png)
+
+
+    只有 `10` 个隐单元数时，决策边界看起来更加参差不齐，默认的非线性是 `relu`，我们调整非线性函数和隐藏单元层数看看效果
+
+- 包含 `2` 个隐层，每个隐层包含 `10` 个隐单元的神经网络学到的决策边界（激活函数为 `relu`）
+
+    ```python
+    # using two hidden layers, with 10 units each
+    mlp = MLPClassifier(solver='lbfgs', random_state=0,
+                        hidden_layer_sizes=[10, 10])
+    mlp.fit(X_train, y_train)
+    mglearn.plots.plot_2d_separator(mlp, X_train, fill=True, alpha=.3)
+    mglearn.discrete_scatter(X_train[:, 0], X_train[:, 1], y_train)
+    plt.xlabel("Feature 0")
+    plt.ylabel("Feature 1")
+    ```
+
+    ![NN 10*10 Hiddens 2 Moons](figures/l16/l16-NN-10-10-Hiddens-2-Moons.png)
+
+- 包含 `2` 个隐层，每个隐层包含 `10` 个隐单元的神经网络学到的决策边界（激活函数 `tanh`）
+
+    ```python
+    # using two hidden layers, with 10 units each, now with tanh nonlinearity.
+    mlp = MLPClassifier(solver='lbfgs', activation='tanh',
+                        random_state=0, hidden_layer_sizes=[10, 10])
+    mlp.fit(X_train, y_train)
+    mglearn.plots.plot_2d_separator(mlp, X_train, fill=True, alpha=.3)
+    mglearn.discrete_scatter(X_train[:, 0], X_train[:, 1], y_train)
+    plt.xlabel("Feature 0")
+    plt.ylabel("Feature 1")
+    ```
+
+    ![NN 10*10 Hiddens 2 Moons Tanh](figures/l16/l16-NN-10-10-Hiddens-2-Moons-Tanh.png)
+
+- 不同隐单元个数与 `alpha` 参数（调节 $L_2$ 惩罚）的不同设定下的决策函数
+
+    ```python
+    fig, axes = plt.subplots(2, 4, figsize=(16, 6))
+    for axx, n_hidden_nodes in zip(axes, [10, 100]):
+        for ax, alpha in zip(axx, [0.0001, 0.01, 0.1, 1]):
+            mlp = MLPClassifier(solver='lbfgs', random_state=0,
+                                hidden_layer_sizes=[n_hidden_nodes, n_hidden_nodes],
+                                alpha=alpha)
+            mlp.fit(X_train, y_train)
+            mglearn.plots.plot_2d_separator(mlp, X_train, fill=True, alpha=.3, ax=ax)
+            mglearn.discrete_scatter(X_train[:, 0], X_train[:, 1], y_train, ax=ax)
+            ax.set_title("n_hidden=[{}, {}]\nalpha={:.4f}".format(
+                        n_hidden_nodes, n_hidden_nodes, alpha))
+    ```
+
+    ![NN Diff Hiddens Alpha 2 Moons Tanh](figures/l16/l16-NN-Diff-Hiddens-Alpha-2-Moons.png)
+
+- 相同参数，但不同随机初始化的情况下学到的决策函数
+
+    神经网络的一个重要性质是，在开始学习之前其权重是随机设置的，这种随机初始化会影响学到的模型，但应该记住这一点（特别是对于较小的网络），即使使用完全相同的参数，如果随机种子不同的话，应该不会对精度有太大影响
+
+    ```python
+    fig, axes = plt.subplots(2, 4, figsize=(16, 6))
+    for i, ax in enumerate(axes.ravel()):
+        mlp = MLPClassifier(solver='lbfgs', random_state=i,
+                            hidden_layer_sizes=[100, 100])
+        mlp.fit(X_train, y_train)
+        mglearn.plots.plot_2d_separator(mlp, X_train, fill=True, alpha=.3, ax=ax)
+        mglearn.discrete_scatter(X_train[:, 0], X_train[:, 1], y_train, ax=ax)
+    ```
+
+    ![NN Diff Random State 2 Moons Tanh](figures/l16/l16-NN-Diff-Random-State-2-Moons.png)
+
+#### Test on Cancer Dataset
+
+**Breast Cancer Dataset**
+
+```python
+from sklearn.datasets import load_breast_cancer
+
+cancer = load_breast_cancer()
+print("cancer.keys():\n", cancer.keys())
+print("Shape of cancer data:", cancer.data.shape)
+print("Sample counts per class:\n",
+      {n: v for n, v in zip(cancer.target_names, np.bincount(cancer.target))})
+print("Feature names:\n", cancer.feature_names)
+```
+
+**Output**
+
+```console
+cancer.keys():
+ dict_keys(['data', 'target', 'target_names', 'DESCR', 'feature_names', 'filename'])
+Shape of cancer data: (569, 30)
+Sample counts per class:
+ {'malignant': 212, 'benign': 357}
+Feature names:
+ ['mean radius' 'mean texture' 'mean perimeter' 'mean area'
+ 'mean smoothness' 'mean compactness' 'mean concavity'
+ 'mean concave points' 'mean symmetry' 'mean fractal dimension'
+ 'radius error' 'texture error' 'perimeter error' 'area error'
+ 'smoothness error' 'compactness error' 'concavity error'
+ 'concave points error' 'symmetry error' 'fractal dimension error'
+ 'worst radius' 'worst texture' 'worst perimeter' 'worst area'
+ 'worst smoothness' 'worst compactness' 'worst concavity'
+ 'worst concave points' 'worst symmetry' 'worst fractal dimension']
+```
+
+一般随意查看一下数据的内容
+
+```python
+print("Cancer data per-feature maxima:\n{}".format(cancer.data.max(axis=0)))
+```
+
+**Output**
+
+```console
+Cancer data per-feature maxima:
+[2.811e+01 3.928e+01 1.885e+02 2.501e+03 1.634e-01 3.454e-01 4.268e-01
+ 2.012e-01 3.040e-01 9.744e-02 2.873e+00 4.885e+00 2.198e+01 5.422e+02
+ 3.113e-02 1.354e-01 3.960e-01 5.279e-02 7.895e-02 2.984e-02 3.604e+01
+ 4.954e+01 2.512e+02 4.254e+03 2.226e-01 1.058e+00 1.252e+00 2.910e-01
+ 6.638e-01 2.075e-01]
+```
+
+我们将 `MLPClassifier` 应用在乳腺癌数据集上，先使用默认参数
+
+```python
+X_train, X_test, y_train, y_test = train_test_split(
+    cancer.data, cancer.target, random_state=0)
+
+mlp = MLPClassifier(random_state=42)
+mlp.fit(X_train, y_train)
+
+print("Accuracy on training set: {:.2f}".format(mlp.score(X_train, y_train)))
+print("Accuracy on test set: {:.2f}".format(mlp.score(X_test, y_test)))
+```
+
+**Output**
+
+```console
+Accuracy on training set: 0.94
+Accuracy on test set: 0.92
+```
+
+MLP 的精度相当好，但是默认参数下没有其他模型好，与之前的 SVC 例子相同，原因可能在于数据的缩放，神经网络也要求所有输入特征的变化范围相似，最理想的情况是 $\overline E=0,\ \delta=1$，我们必须对数据进行缩放以满足这些要求
+
+
+```python
+# 计算训练集中每个特征的平均值
+mean_on_train = X_train.mean(axis=0)
+# 计算训练集中每个特征的标准差
+std_on_train = X_train.std(axis=0)
+
+# 减去平均值，然后乘以标准差的倒数
+# afterward, mean=0 and std=1
+X_train_scaled = (X_train - mean_on_train) / std_on_train
+# 对测试集做相同的变化，使用训练集的平均值和标准差
+X_test_scaled = (X_test - mean_on_train) / std_on_train
+
+mlp = MLPClassifier(random_state=0)
+mlp.fit(X_train_scaled, y_train)
+
+print("Accuracy on training set: {:.3f}".format(
+    mlp.score(X_train_scaled, y_train)))
+print("Accuracy on test set: {:.3f}".format(mlp.score(X_test_scaled, y_test)))
+```
+
+**Output**
+
+```console
+Accuracy on training set: 0.991
+Accuracy on test set: 0.965
+```
+
+缩放之后的结果要好的多，而且模型精度也相当有竞争力，不过模型给出了一个警告，告诉我们已经达到最大迭代次数
+
+```console
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet.
+  % self.max_iter, ConvergenceWarning)
+```
+
+这是用于学习模型 `adam` 算法的一部分，告诉我们应该增加迭代次数
+
+```python
+mlp = MLPClassifier(max_iter=1000, random_state=0)
+mlp.fit(X_train_scaled, y_train)
+
+print("Accuracy on training set: {:.3f}".format(
+    mlp.score(X_train_scaled, y_train)))
+print("Accuracy on test set: {:.3f}".format(mlp.score(X_test_scaled, y_test)))
+```
+
+**Output**
+
+```console
+Accuracy on training set: 1.000
+Accuracy on test set: 0.972
+```
+
+模型的性能持续提升，我们还可以增大 `alpha` 的值来考察，正则化对模型的影响
+
+```python
+mlp = MLPClassifier(max_iter=1000, alpha=1, random_state=0)
+mlp.fit(X_train_scaled, y_train)
+
+print("Accuracy on training set: {:.3f}".format(
+    mlp.score(X_train_scaled, y_train)))
+print("Accuracy on test set: {:.3f}".format(mlp.score(X_test_scaled, y_test)))
+```
+
+**Output**
+
+```console
+Accuracy on training set: 0.988
+Accuracy on test set: 0.972
+```
+
+这得到了与我们目前最好地模型相同的性能
+
+虽然可以分析神经网络学到了什么，但这通常比分析线性模型或基于树的模型更为复杂，要想观察模型学到了什么，一种方法是查看模型的权重，下面这张图显示了输入与第一个隐层之间的权重，图中的行对应 `30` 个输入特征，列对应 `100` 个隐单元，浅色代表正值方向较大，而深色代表负值
+
+```python
+plt.figure(figsize=(20, 5))
+plt.imshow(mlp.coefs_[0], interpolation='none', cmap='viridis')
+plt.yticks(range(30), cancer.feature_names)
+plt.xlabel("Columns in weight matrix")
+plt.ylabel("Input feature")
+plt.colorbar()
+```
+
+![NN Heat Map Cancer Dataset](figures/l16/l16-NN-Heat-Map-Cancer-Dataset.png)
+
+如果某个特征对所有隐单元的权重都很小，那么这个特征对模型来说就“不太重要”，可以看到，与其他特征相比，“mean smoothness”，“mean compactness” 以及 “smoothness error” 和 “fractal dimension error” 之间的特征的权重都相对较小，这可能说明这些特征不太重要，也可能是我们没有用神经网络可以使用的方式来表示这些特征
+
+我们还可以将连接隐层和输出层的特征可视化，但它们更加难以解释
+
+虽然 `MLPClassifier` 和 `MLPRegressor` 为最常见的神经网络架构提供了易于使用的接口，但它们只包含神经网络潜在应用的一部分，如果有兴趣使用更灵活或更强大的模型，可以继续学习除了 scikit-learn 之外的很棒的深度学习库，对于 Python 用户来说，最为完善的是 Keras，Lasagna 和 Tensorflow，以及现在更为流行的 Pytorch
+
+Lasagna 是基于 Theano 库构建的，而 Keras 就可以用 Tensorflow 也可以用 Theano，这些库提供了更为灵活的接口，可以用来构建神经网络并跟踪深度学习研究的快速发展，所有流行的深度学习库也都允许使用高性能的图像处理单元（GPU），但 scikit-learn 不支持 GPU，使用 GPU 可以将计算速度加快 10 到 100 倍，GPU 对于深度学习方法应用到大型数据集上至关重要
+
+### Summary of Neural Network 
+
+#### Strengths
+
+神经网络的主要优点之一是能够获取大量数据中包含的信息，并构建无比复杂的模型
+
+给定足够的计算时间和数据，并且仔细调节参数，神经网络通常可以打败其他机器学习算法（无论是分类任务还是回归任务）
+
+#### Weaknesses 
+
+神经网络，特别是功能强大的大型神经网络，通常需要很长的训练时间，还需要仔细地预处理数据
+
+与 SVM 类似，神经网络在 “均匀” 数据上的性能最好，其中 “均匀” 是指所有特征都具有相似的含义，如果数据包含不同种类的特征，那么基于树的模型可能表现得更好，神经网络调参本身也是一门艺术
+
+#### Complexity
+
+控制神经网络复杂度的方法有很多种
+
+- 隐层的个数
+- 每个隐层中的单元个数
+- 正则化（`alpha` 参数）
+
+估计神经网络的复杂度，最重要的参数是层数和每层的隐单元个数，首先设置 $1$ 个或 $2$ 个隐层，然后可以逐步增加，每个隐层的结点个数通常与输入特征个数接近
+
+在考虑神经网络的模型复杂度时，一个有用的度量是权重（或系数）的个数
+
+- 如果有一个包含 $100$ 个特征的二分类数据集，模型有 $100$ 个隐单元，那么输入层和第一个隐层之间既有 $100\times 100=10000$ 个权重，在隐层和输出层之间还有 $100\times1=100$ 个权重，总共约有 $10100$ 个权重，如果添加含有 $100$ 个隐单元的第二个隐层，那么在第一个隐层和第二个隐层之间又有 $100\times 100=10000$ 个权重，总数变为约 $20100$ 个权重
+- 如果使用包含 $1000$ 个隐单元的单隐层，那么在输入层和隐层单元之间需要学习 $100\times 1000=100000$ 个权重，隐层到输出层之间需要学习 $1000\times 1=1000$ 个权重，总共 $101000$ 个权重，如果再添加第二个隐层，就会增加 $1000\times 1000=1000000$ 个权重，总数变为巨大的 $1101000$ 个权重，这比含有 $2$ 个隐层，每层 $100$ 个单元的模型要大 $50$ 倍
+
+#### Parameters
+
+- 神经网络的一个重要性质是，在开始学习之前其权重是随机设置的，这种随机初始化会影响学到的模型（即使使用完全相同的参数）
+- MLP 的精度相当好，但没有其他模型好
+    - 由于数据的缩放。神经网络也要求所有输入特征的变化范围相似（与较早的 SVC 例子相同）
+    - 最理想的情况是 $\overline E=0,\ \delta=1$
+- 神经网络调参的常用方法是
+    - 首先创建一个达到足以过拟合的网络，确保这个网络可以对任务进行学习
+    - 确保训练数据可以被学习之后，要么缩小网络，要么增大 `alpha` 来增强正则化，以提高泛化性能
+- 由 `solver` 参数设定如何学习模型或用来学习参数的算法 `solver` 有两个好用的选项
+    - 默认选项是 `adam`，在大多数情况下效果都很好，但对数据的缩放相当敏感（始终将数据缩放为 $\overline E=0,\ \delta=1$ 是很重要的）
+    - 另一个选项是 `lbfgs`，其鲁棒性相当好，但在大型模型或大型数据集上的时间会比较长
+    - 更高级的 `sgd` 选项，许多深度学习研究人员都会用到，`sgd` 选项还有许多参数需要调节，以便获得最佳结果
+    - 在开始使用 MLP 时，建议使用 `adam` 和 `lbfgs`
