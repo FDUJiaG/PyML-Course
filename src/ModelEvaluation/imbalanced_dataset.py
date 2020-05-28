@@ -5,6 +5,9 @@ from sklearn.dummy import DummyClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import confusion_matrix
 from sklearn.linear_model import LogisticRegression
+
+from sklearn.metrics import f1_score, classification_report
+
 import warnings
 
 warnings.filterwarnings("ignore", category=Warning)
@@ -35,3 +38,25 @@ print("logreg score: {:.2f}".format(logreg.score(X_test, y_test)))
 # Confusion Matrices
 confusion = confusion_matrix(y_test, pred_logreg)
 print("Confusion matrix:\n{}".format(confusion))
+
+print("Most frequent class:")
+print(confusion_matrix(y_test, pred_most_frequent))
+print("\nDummy model:")
+print(confusion_matrix(y_test, pred_dummy))
+print("\nDecision tree:")
+print(confusion_matrix(y_test, pred_tree))
+print("\nLogistic Regression:")
+print(confusion_matrix(y_test, pred_logreg))
+
+# F1
+print("f1 score most frequent: {:.2f}".format(f1_score(y_test, pred_most_frequent)))
+print("f1 score dummy: {:.2f}".format(f1_score(y_test, pred_dummy)))
+print("f1 score tree: {:.2f}".format(f1_score(y_test, pred_tree)))
+print("f1 score logistic regression: {:.2f}".format(f1_score(y_test, pred_logreg)))
+
+# report
+# print(classification_report(y_test, pred_most_frequent))
+print(classification_report(y_test, pred_most_frequent, target_names=["not nine", "nine"]))
+
+print(classification_report(y_test, pred_dummy, target_names=["not nine", "nine"]))
+print(classification_report(y_test, pred_logreg, target_names=["not nine", "nine"]))
