@@ -530,4 +530,120 @@ Average precision of svc: 0.666
 
 因为平均精度是曲线下的面积，所以平均精度总是返回一个介于 0（最差）和 1（最好）之间的值，一个分类器随机分配 `decision_function` 的平均精度是数据集中正向样本的百分比
 
+### Receiver Operating Characteristics and AUC
 
+受试者工作特征曲线，简称为 ROC 曲线（ROC curve），与 precision-recall 曲线类似，ROC 曲线考虑了给定分类器的所有可能阈值，但它显示的是假正例率（False Positive Rate，FPR）和真正例率（True Positive Rate，TPR），而不是报告准确率和召回率（真正例率只是召回率的另一个名称，而假正例率则是假正例占所有反类样本的比例）
+
+$$
+FPR = \frac{FP}{FP+TN}
+$$
+
+可以用 `roc_curve` 函数来计算 `ROC` 曲线
+
+```python
+from sklearn.metrics import roc_curve
+fpr, tpr, thresholds = roc_curve(y_test, svc.decision_function(X_test))
+
+plt.plot(fpr, tpr, label="ROC Curve")
+plt.xlabel("FPR")
+plt.ylabel("TPR (recall)")
+# find threshold closest to zero
+close_zero = np.argmin(np.abs(thresholds))
+plt.plot(fpr[close_zero], tpr[close_zero], 'o', markersize=10,
+         label="threshold zero", fillstyle="none", c='k', mew=2)
+plt.legend(loc=4)
+```
+
+![ROC SVM](figures/l20/l20-ROC-SVM.png)
+
+对 ROC 曲线，理想的情况是曲线要靠近左上角，我们希望分类器的召回率很高，同时保持假正例率很低，从曲线中可以看出，与默认阈值`0` 相比，我们可以得到明显更高的召回率（约 `0.9`），而 FPR 仅稍有增加，最接近左上角的点很可能比默认值更有效，同样注意，不应该在测试集上选择阈值，而是应该在单独的验证集上选择
+
+下面给出随机森林和 SVM 的 ROC 曲线对比
+
+```python
+fpr_rf, tpr_rf, thresholds_rf = roc_curve(y_test, rf.predict_proba(X_test)[:, 1])
+
+plt.plot(fpr, tpr, label="ROC Curve SVC")
+plt.plot(fpr_rf, tpr_rf, label="ROC Curve RF")
+
+plt.xlabel("FPR")
+plt.ylabel("TPR (recall)")
+plt.plot(fpr[close_zero], tpr[close_zero], 'o', markersize=10,
+         label="threshold zero SVC", fillstyle="none", c='k', mew=2)
+close_default_rf = np.argmin(np.abs(thresholds_rf - 0.5))
+plt.plot(fpr_rf[close_default_rf], tpr[close_default_rf], '^', markersize=10,
+         label="threshold 0.5 RF", fillstyle="none", c='k', mew=2)
+
+plt.legend(loc=4)
+```
+
+![ROC SVM RF](figures/l20/l20-ROC-SVM-RF.png)
+
+与 precision-recall 曲线一样，我们通常希望使用一个数字来总结 ROC 曲线，即曲线下的面积（通常被称为 AUC（area under the curve），这里的曲线指的就是 ROC 曲线），我们可以利用 `roc_auc_sore` 函数来计算 ROC 曲线下的面积
+
+```python
+from sklearn.metrics import roc_auc_score
+rf_auc = roc_auc_score(y_test, rf.predict_proba(X_test)[:, 1])
+svc_auc = roc_auc_score(y_test, svc.decision_function(X_test))
+print("AUC for Random Forest: {:.3f}".format(rf_auc))
+print("AUC for SVC: {:.3f}".format(svc_auc))
+```
+
+**Output**
+
+```console
+AUC for Random Forest: 0.937
+AUC for SVC: 0.916
+```
+
+比较随机森林和 SVC 的 AUC 得分，我们发现随机森林的表现比 SVC 要更好一些
+
+因为平均精度是曲线下的面积，所以总是返回一个介于 `0`（最差）和 `1`（最好）之间的值，无论数据集中的类有多不平衡，随机预测总是会产生一个 `0.5` 的 AUC，这使得它成为不平衡分类问题的衡量标准，比准确度要好得多
+
+AUC 可以理解为评估正类样本的排名，AUC 相当于根据分类器随机抽取的正类点比随机抽取的负类点的得分高的概率，所以完美的 AUC 为 1，意味着所有正类点的得分都比所有负类点的得分高
+
+For classification problems with imbalanced classes, using AUC for model-selection is often much more meaningful than using accuracy. Let’s go back to the problem we studied above of classifying all nines in the digits dataset versus all other digits. We will classify the dataset with an SVM with three different settings of the kernel bandwidth gamma
+
+对于不平衡类的分类问题，使用 AUC 进行模型选择往往比使用准确度更有意义，让我们回到前面研究的问题，即对数字数据集中的所有 $9$ 与其他所有数字进行分类，我们将设置 SVM 三种不同的 `gamma` 来分类
+
+```python
+from sklearn.datasets import load_digits
+digits = load_digits()
+y = digits.target == 9
+
+X_train, X_test, y_train, y_test = train_test_split(
+    digits.data, y, random_state=0)
+
+plt.figure()
+
+for gamma in [1, 0.05, 0.01]:
+    svc = SVC(gamma=gamma).fit(X_train, y_train)
+    accuracy = svc.score(X_test, y_test)
+    auc = roc_auc_score(y_test, svc.decision_function(X_test))
+    fpr, tpr, _ = roc_curve(y_test, svc.decision_function(X_test))
+    print("gamma = {:.2f}  accuracy = {:.2f}  AUC = {:.2f}".format(gamma, accuracy, auc))
+    plt.plot(fpr, tpr, label="gamma={:.3f}".format(gamma))
+plt.xlabel("FPR")
+plt.ylabel("TPR")
+plt.xlim(-0.01, 1)
+plt.ylim(0, 1.02)
+plt.legend(loc="best")
+```
+
+**Output**
+
+```console
+gamma = 1.00  accuracy = 0.90  AUC = 0.50
+gamma = 0.05  accuracy = 0.90  AUC = 1.00
+gamma = 0.01  accuracy = 0.90  AUC = 1.00
+```
+
+![ROC SVM GAMMA](figures/l20/l20-ROC-SVM-GAMMA.png)
+
+`gamma` 的三种设置的准确率都是一样的，都是 90%，不过，看一下AUC和相应的曲线，我们可以看到这三种模型之间有明显的区别
+
+当 `gamma=1.0` 时，AUC 实际上处于偶然性水平，也就是说 `decision_function` 的输出和随机性一样，当 `gamma=0.05` 时，性能急剧提高，最后当 `gamma=0.01` 时，我们得到的 AUC 为 `1.0`，这意味着，根据决策函数，所有的正值点的排名都高于所有的负值点，换句话说，在合适的阈值下，这个模型可以对数据进行完美的分类! 
+
+如果详细观察 `gamma=0.01` 的曲线，你可以看到左上角附近有一个小的折痕，这意味着至少有一个点没有被正确排序，`1.0` 的 AUC 是四舍五入到小数点后的结果] 知道了这一点，我们就可以调整这个模型的临界值，得到很好的预测结果，当然如果我们只看准确度的话，我们就不能发现这个结论
+
+基于这个原因，我们强烈建议在不平衡数据上评估模型时使用 AUC，请记住，AUC 并不使用默认阈值，所以为从高 AUC 的模型中获得有用的分类结果，调整决策阈值可能是必要的

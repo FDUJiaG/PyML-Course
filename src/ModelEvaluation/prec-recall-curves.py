@@ -54,7 +54,7 @@ plt.plot(precision_rf[close_default_rf], recall_rf[close_default_rf], '^', c='k'
 plt.xlabel("Precision")
 plt.ylabel("Recall")
 plt.legend(loc="best")
-# plt.show()
+plt.show()
 
 print("f1_score of random forest: {:.3f}".format(
     f1_score(y_test, rf.predict(X_test))))
