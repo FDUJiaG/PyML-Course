@@ -46,11 +46,16 @@ $$
 
 下面两幅图展示了两种不同投影向量
 
-![PCA Projection 2D](figures/l31/l31-PCA-Projection-2D.jpg) ![PCA Projection 1D](figures/l31/l31-PCA-Projection-2D2.jpg)
+|Projection Method I|Projection Method II|
+|:---:|:---:|
+|![PCA Projection 2D1](figures/l31/l31-PCA-Projection-2D.jpg) |![PCA Projection 2D2](figures/l31/l31-PCA-Projection-2D2.jpg)|
 
 我们能够和清楚地看到，对于第一种向量的 **投影误差和** 一定比第二种的 **投影误差和** 要小，对应以上两幅图的投影结果
 
-![PCA Projection 2D](figures/l31/l31-PCA-Projection-1D.jpg) ![PCA Projection 1D](figures/l31/l31-PCA-Projection-1D2.jpg)
+|Projection Result I|Projection Result II|
+|:---:|:---:|
+|![PCA Projection 1D1](figures/l31/l31-PCA-Projection-1D.jpg) |![PCA Projection 1D2](figures/l31/l31-PCA-Projection-1D2.jpg)|
+
 
 假设对于原样本中，位于第一象限的三个样本点属于类别 “A” ，位于第三象限的两个样本点属于类别 “B”，经过投影后，我们可以看出，对于第一种降维，在降维后仍旧保持了位于原点右侧的三个样本属于类别 “A”，位于原点左侧的两个样本属于类别 “B”，而对于第二种投影，明显可以看出，已经不能够分辨出样本的类别了，换句话说，第二种投影方式丢失了一些信息
 
@@ -102,16 +107,15 @@ mglearn.plots.plot_pca_illustration()
 这里将提到有关线性代数里的一些内容
 
 - 协方差矩阵
-	- 特征 $X_i$ 与特征 $X_j$ 的 **协方差（Covariance）**
-
+	- 特征 $X_i$ 与特征 $X_j$ 的 **协方差（Covariance）** 为
         $$
-		Cov(X_i,X_j)=\frac{\sum\limits_{k=1}^{n}\left( X_i^{(k)} - \overline{X_i} \right)
+	    Cov(X_i,X_j)=\frac{\sum\limits_{k=1}^{n}\left( X_i^{(k)} - \overline{X_i} \right)
 		\left( X_j^{(k)} - \overline{X_j} \right)}{n-1}
-		$$
+	    $$
 
-		其中 $X_i^{(k)}$，$X_i^{(k)}$ 表示特征 $X_i$ ，$X_j$ 的第 $k$ 个样本中的取值，而 $\overline{X_i}$ ， $\overline{X_j}$ 则是表示两个特征的样本均值
+	    其中 $X_i^{(k)}$，$X_i^{(k)}$ 表示特征 $X_i$ ，$X_j$ 的第 $k$ 个样本中的取值，而 $\overline{X_i}$ ， $\overline{X_j}$ 则是表示两个特征的样本均值
 
-		可以看出，**当** $X_i=X_j$ **时，协方差即为方差**
+	    可以看出，**当** $X_i=X_j$ **时，协方差即为方差**
 
 	- 对于一个只有两个特征的样本来说，其 **协方差矩阵** 为
 

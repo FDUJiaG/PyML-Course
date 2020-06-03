@@ -24,15 +24,15 @@ print("Original shape: {}".format(str(X_scaled.shape)))
 print("Reduced shape: {}".format(str(X_pca.shape)))
 
 # 对第一个和第二个主成分作图，按类别着色
-# plt.figure(figsize=(8, 7))
-# mglearn.discrete_scatter(X_pca[:, 0], X_pca[:, 1], cancer.target)
-# plt.legend(cancer.target_names, loc="best")
-# plt.gca().set_aspect("equal")
-# plt.xlabel("First principal component")
-# plt.ylabel("Second principal component")
-#
-# plt.tight_layout()
-# plt.show()
+plt.figure(figsize=(8, 7))
+mglearn.discrete_scatter(X_pca[:, 0], X_pca[:, 1], cancer.target)
+plt.legend(cancer.target_names, loc="best")
+plt.gca().set_aspect("equal")
+plt.xlabel("First principal component")
+plt.ylabel("Second principal component")
+
+plt.tight_layout()
+plt.show()
 
 print("PCA component shape: {}".format(pca.components_.shape))
 print("PCA components:\n{}".format(pca.components_))
@@ -45,4 +45,4 @@ plt.xticks(range(len(cancer.feature_names)),
 plt.xlabel("Feature")
 plt.ylabel("Principal components")
 
-plt.show()
+# plt.savefig('fig.png', bbox_inches='tight')
