@@ -602,8 +602,6 @@ AUC for SVC: 0.916
 
 AUC 可以理解为评估正类样本的排名，AUC 相当于根据分类器随机抽取的正类点比随机抽取的负类点的得分高的概率，所以完美的 AUC 为 1，意味着所有正类点的得分都比所有负类点的得分高
 
-For classification problems with imbalanced classes, using AUC for model-selection is often much more meaningful than using accuracy. Let’s go back to the problem we studied above of classifying all nines in the digits dataset versus all other digits. We will classify the dataset with an SVM with three different settings of the kernel bandwidth gamma
-
 对于不平衡类的分类问题，使用 AUC 进行模型选择往往比使用准确度更有意义，让我们回到前面研究的问题，即对数字数据集中的所有 $9$ 与其他所有数字进行分类，我们将设置 SVM 三种不同的 `gamma` 来分类
 
 ```python

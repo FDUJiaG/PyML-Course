@@ -16,21 +16,27 @@ svc = SVC(gamma=.05).fit(X_train, y_train)
 
 fpr, tpr, thresholds = roc_curve(y_test, svc.decision_function(X_test))
 
-# plt.plot(fpr, tpr, label="ROC Curve")
-# plt.xlabel("FPR")
-# plt.ylabel("TPR (recall)")
+plt.figure(figsize=(11, 4.5))
+plt.subplots_adjust(left=0.32, right=0.68)
+
+plt.plot(fpr, tpr, label="ROC Curve")
+plt.xlabel("FPR")
+plt.ylabel("TPR (recall)")
 
 # find threshold closest to zero
 close_zero = np.argmin(np.abs(thresholds))
-# plt.plot(fpr[close_zero], tpr[close_zero], 'o', markersize=10,
-#          label="threshold zero", fillstyle="none", c='k', mew=2)
-# plt.legend(loc=4)
+plt.plot(fpr[close_zero], tpr[close_zero], 'o', markersize=10,
+         label="threshold zero", fillstyle="none", c='k', mew=2)
+plt.legend(loc=4)
 # plt.show()
 
 rf = RandomForestClassifier(n_estimators=100, random_state=0, max_features=2)
 rf.fit(X_train, y_train)
 
 fpr_rf, tpr_rf, thresholds_rf = roc_curve(y_test, rf.predict_proba(X_test)[:, 1])
+
+plt.figure(figsize=(11, 4.5))
+plt.subplots_adjust(left=0.32, right=0.68)
 
 plt.plot(fpr, tpr, label="ROC Curve SVC")
 plt.plot(fpr_rf, tpr_rf, label="ROC Curve RF")
@@ -57,7 +63,8 @@ y = digits.target == 9
 X_train, X_test, y_train, y_test = train_test_split(
     digits.data, y, random_state=0)
 
-plt.figure()
+plt.figure(figsize=(11, 4.5))
+plt.subplots_adjust(left=0.32, right=0.68)
 
 for gamma in [1, 0.05, 0.01]:
     svc = SVC(gamma=gamma).fit(X_train, y_train)
