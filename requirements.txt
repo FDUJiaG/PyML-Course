@@ -8,3 +8,4 @@ openpyxl
 xlrd
 mglearn
 graphviz
+seaborn
