@@ -140,4 +140,6 @@ k-means-mglearn.py
 id-card-verify.py
 html/
 Face_Recognition _on_Olivetti/
-combat00-face-recognition-on-olivetti.md
+combat00-face-recognition-on-wild.md
+combat00-face-recognition-on-wild.ipynb
+
