@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 def plt1():
     x = np.linspace(-np.pi, np.pi, 256, endpoint=True)
     c, s = np.cos(x), np.sin(x)
-    plt.plot(x, c)
-    plt.figure(1)
+    plt.figure(figsize=(12, 10))
+    # plt.plot(x, c)
     plt.plot(x, c, color="blue", linewidth=1.5, linestyle="-",
              label="COS", alpha=0.6)    # 散点图
     plt.plot(x, s, "r*", label="SIN", alpha=0.6)
