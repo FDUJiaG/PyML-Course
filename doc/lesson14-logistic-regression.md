@@ -11,11 +11,13 @@
 ### Prediction Function
 
 对于 **线性回归** 我们的 **预测函数** 为
+
 $$
 h_\theta(x)=\theta_0+\theta_1x_1+\theta_2x_2+⋯+\theta_nx_n=\theta^{\mathrm{T}}x
 $$
 
 但这个 **预测函数** 的输出是个没有范围的连续值，并不适合分类问题。因此在 **逻辑回归** 中使用了
+
 $$
 \begin{aligned}
 h_\theta(x) &= g(\theta^\mathrm{T}x) \\
@@ -222,7 +224,7 @@ $$
 除了梯度下降算法以外，还有一些常被用来令损失函数最小的算法，这些算法更加复杂和优越，而且通常不需要人工选择学习率，通常比梯度下降算法要更加快速，这些算法有
 
 - 共轭梯度（**Conjugate Gradient**）
-- 局部优化法（**fletcher goldfarb shann，BFGS**）
+- 局部优化法（**Broyden Fletcher Goldfarb Shann，BFGS**）
 - 有限内存局部优化法（**LBFGS**） 
 
 ## Regularization
@@ -323,6 +325,7 @@ $$
 \theta_j :=\theta_j(1-\alpha\frac{\lambda}{m}) 
 	-\alpha\frac1m\sum\limits_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}
 $$
+
 可以看出，正则化线性回归的梯度下降算法的变化在于，每次都在原有算法更新规则的基础上令 $\theta$ 值减少了一个额外的值
 
 我们同样也可以利用正规方程来求解正则化线性回归模型，方法如下所示
@@ -387,6 +390,93 @@ def costReg(theta, X, y, learningRate):
 
 1. 看上去同线性回归一样，但是知道 $h_\theta(x)=g(\theta^\mathrm{T}x)$ ，所以与线性回归不同
 1. $\theta_0$ 不参与其中的任何一个正则化
+
+## A simple example in sklearn
+
+首先我们导入一些常用的 package
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+```
+
+然后我们编写一个符合数据要求的数据
+
+```python
+def create_data():
+    iris = load_iris()
+    df = pd.DataFrame(iris.data, columns=iris.feature_names)
+    df['label'] = iris.target
+    df.columns = ['sepal length', 'sepal width', 'petal length', 'petal width', 'label']
+    data = np.array(df.iloc[:100, [0,1,-1]])	# 前 100 个数据正好只有两类
+    return data[:,:2], data[:,-1]
+```
+
+切分数据集
+
+```python
+X, y = create_data()
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+```
+
+实例化分类器，并拟合训练集
+
+```python
+clf = LogisticRegression(max_iter=200)
+clf.fit(X_train, y_train)
+```
+
+**Output**
+
+```console
+LogisticRegression(max_iter=200)
+```
+
+查看系数信息
+
+```python
+print(clf.coef_, clf.intercept_)
+```
+
+**Output**
+
+```console
+[[ 2.50541504 -2.82843411]] [-4.88781603]
+```
+
+查看评分
+
+```python
+clf.score(X_test, y_test)
+```
+
+**Output**
+
+```console
+1.0
+```
+
+对于比较好的数据集，Logistics 回归的效果还是不错的，我们可以将数据可视化
+
+```python
+x_ponits = np.array([X.min(0)[0], X.max(0)[0]])
+y_ = -(clf.coef_[0][0]*x_ponits + clf.intercept_)/clf.coef_[0][1]
+
+plt.figure(figsize=(10, 6))
+plt.plot(x_ponits, y_)
+
+plt.plot(X[:50, 0], X[:50, 1], 'bo', color='blue', label='0')
+plt.plot(X[50:, 0], X[50:, 1], 'bo', color='orange', label='1')
+plt.xlabel('sepal length')
+plt.ylabel('sepal width')
+plt.legend()
+```
+
+![Logistic Samples](figures/l14/l14-Logistic-Samples.png)
 
 ## Summary of Logistic Regression
 
