@@ -12,17 +12,17 @@
 
 - 驱动
     - NIVIDA 官网驱动 [下载网址](https://www.nvidia.cn/Download/index.aspx?lang=cn) ，根据实际情况选择
-    
+
     ![NVIDIA Drive Download](figs/NVIDIA-Drive-Download.jpg)
-    
+
     - 随后可以进入下载页面，在 CentOS 7 中，我们可以根据下载链接进行下载
 
     ```bash
     wget http://us.download.nvidia.com/tesla/418.152.00/NVIDIA-Linux-x86_64-418.152.00.run
     ```
-    
-    - 解压后使用 
-    
+
+    - 解压后使用
+
     ```bash
     chmod a+x NVIDIA-Linux-x86_64-418.152.00.run
     ./NVIDIA-Linux-x86_64-418.152.00.run
@@ -296,7 +296,7 @@ $ pip --version
 pip 20.2.2 from /root/miniconda3/envs/tf-gpu/lib/python3.7/site-packages/pip (python 3.7)
 ```
 
-### Install TensorFlow 
+### Install TensorFlow
 
 从 TensorFlow 2.1 开始，pip 包 tensorflow 即同时包含 GPU 支持，无需通过特定的 pip 包 tensorflow-gpu 安装 GPU 版本。如果对 pip 包的大小敏感，可使用 tensorflow-cpu 包安装仅支持 CPU 的 TensorFlow 版本
 
@@ -349,7 +349,7 @@ pip freeze > requirements.txt
 
     ```console
     $ diff main.py main.gpu.py
-    
+
     10,11c10,11
     < # from apps.dl_distinction import dl_distinction
     < from apps.openvino_distinction import vino_distinction
