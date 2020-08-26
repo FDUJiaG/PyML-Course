@@ -1,7 +1,7 @@
 # Summary
 
 * [Introduction](README.md)
-* [Introduction of AI](doc/lesson01-from-ai-to-ml.md)
+* [From AI to Machine Learning](doc/lesson01-from-ai-to-ml.md)
 * [Setup the Environment](doc/lesson02-setup-python-env.md)
     * [Install Anaconda and Pycharm](doc/install00-anaconda-and-pycharm.md)
     * [Python's Basic Operations](doc/lesson03-basic-operation-of-python.md)
