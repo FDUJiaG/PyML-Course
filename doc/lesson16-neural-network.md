@@ -406,7 +406,7 @@ mglearn.plots.plot_two_hidden_layer_graph()
     plt.ylabel("Feature 1")
     ```
 
-    ![NN 100 Hiddens 2 Moons](figures/l16/l16-NN-100-Hiddens-2-Moons.png)
+![NN 100 Hiddens 2 Moons](figures/l16/l16-NN-100-Hiddens-2-Moons.png)
 
     - 从上图我们可以看到，神经网络学到的决策边界完全是非线性的，但相对平滑
     - 默认情况下，MLP 使用 `100` 个隐结点，这对于这个小型数据集来说已经相当多了，我们可以减少其数量（从而降低了模型复杂度），但仍然可以得到很好的结果
@@ -422,7 +422,7 @@ mglearn.plots.plot_two_hidden_layer_graph()
     plt.ylabel("Feature 1")
     ```
 
-    ![NN 10 Hiddens 2 Moons](figures/l16/l16-NN-10-Hiddens-2-Moons.png)
+![NN 10 Hiddens 2 Moons](figures/l16/l16-NN-10-Hiddens-2-Moons.png)
 
 
     只有 `10` 个隐单元数时，决策边界看起来更加参差不齐，默认的非线性是 `relu`，我们调整非线性函数和隐藏单元层数看看效果
@@ -440,7 +440,7 @@ mglearn.plots.plot_two_hidden_layer_graph()
     plt.ylabel("Feature 1")
     ```
 
-    ![NN 10*10 Hiddens 2 Moons](figures/l16/l16-NN-10-10-Hiddens-2-Moons.png)
+![NN 10*10 Hiddens 2 Moons](figures/l16/l16-NN-10-10-Hiddens-2-Moons.png)
 
 - 包含 `2` 个隐层，每个隐层包含 `10` 个隐单元的神经网络学到的决策边界（激活函数 `tanh`）
 
@@ -455,7 +455,7 @@ mglearn.plots.plot_two_hidden_layer_graph()
     plt.ylabel("Feature 1")
     ```
 
-    ![NN 10*10 Hiddens 2 Moons Tanh](figures/l16/l16-NN-10-10-Hiddens-2-Moons-Tanh.png)
+![NN 10*10 Hiddens 2 Moons Tanh](figures/l16/l16-NN-10-10-Hiddens-2-Moons-Tanh.png)
 
 - 不同隐单元个数与 `alpha` 参数（调节 $L_2$ 惩罚）的不同设定下的决策函数
 
@@ -473,7 +473,7 @@ mglearn.plots.plot_two_hidden_layer_graph()
                         n_hidden_nodes, n_hidden_nodes, alpha))
     ```
 
-    ![NN Diff Hiddens Alpha 2 Moons Tanh](figures/l16/l16-NN-Diff-Hiddens-Alpha-2-Moons.png)
+![NN Diff Hiddens Alpha 2 Moons Tanh](figures/l16/l16-NN-Diff-Hiddens-Alpha-2-Moons.png)
 
 - 相同参数，但不同随机初始化的情况下学到的决策函数
 
@@ -489,7 +489,7 @@ mglearn.plots.plot_two_hidden_layer_graph()
         mglearn.discrete_scatter(X_train[:, 0], X_train[:, 1], y_train, ax=ax)
     ```
 
-    ![NN Diff Random State 2 Moons Tanh](figures/l16/l16-NN-Diff-Random-State-2-Moons.png)
+![NN Diff Random State 2 Moons Tanh](figures/l16/l16-NN-Diff-Random-State-2-Moons.png)
 
 #### Test on Cancer Dataset
 

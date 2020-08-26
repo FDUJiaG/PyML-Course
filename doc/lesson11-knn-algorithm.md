@@ -145,7 +145,7 @@ mglearn.plots.plot_knn_classification(n_neighbors=3)
 
     **Output**
 
-    ![kNN Classification Eg Frog](figures/l11/l11-kNN-Classification-Eg-Frog.png)
+![kNN Classification Eg Frog](figures/l11/l11-kNN-Classification-Eg-Frog.png)
 
 ## k-Neighbors Regression
 
@@ -229,7 +229,7 @@ mglearn.plots.plot_knn_regression(n_neighbors=3)
     axes[0].legend(["Model predictions","Training data/target", "Test data/target"], loc="test")
     ```
 
-    ![kNN Regression Principle](figures/l11/l11-kNN-Regression-Eg-Wave.png)
+![kNN Regression Principle](figures/l11/l11-kNN-Regression-Eg-Wave.png)
 
 ## Using kNN in sklearn
 

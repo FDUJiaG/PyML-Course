@@ -644,7 +644,7 @@ gamma = 0.05  accuracy = 0.90  AUC = 1.00
 gamma = 0.01  accuracy = 0.90  AUC = 1.00
 ```
 
-![ROC SVM GAMMA](figures/l20/l20-ROC-SVM-GAMMA.png)
+![ROC SVM GAMMA](figures/l20/l20-ROC-SVM-Gamma.png)
 
 `gamma` 的三种设置的准确率都是一样的，都是 $90\%$，不过，看一下 AUC 和相应的曲线，我们可以看到这三种模型之间有明显的区别
 

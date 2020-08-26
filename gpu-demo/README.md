@@ -13,7 +13,7 @@
 - 驱动
     - NIVIDA 官网驱动 [下载网址](https://www.nvidia.cn/Download/index.aspx?lang=cn) ，根据实际情况选择
 
-    ![NVIDIA Drive Download](figs/NVIDIA-Drive-Download.jpg)
+![NVIDIA Drive Download](figs/NVIDIA-Drive-Download.jpg)
 
     - 随后可以进入下载页面，在 CentOS 7 中，我们可以根据下载链接进行下载
 
@@ -33,7 +33,7 @@
     - [历史版本列表](https://developer.nvidia.com/cuda-toolkit-archive)
     - 以 10.1 Update 2 为例，根据实际需求进行选择
 
-    ![CUDA Toolkit 10.1 update2 Archive](figs/CUDA-Toolkit-10.1-update2-Archive.jpg)
+![CUDA Toolkit 10.1 update2 Archive](figs/CUDA-Toolkit-10.1-update2-Archive.jpg)
 
     - 根据步骤下载
 
