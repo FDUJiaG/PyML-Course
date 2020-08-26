@@ -1,30 +1,28 @@
 # PyML-Course
 This is a repository for Python Machine Learning Courseware
 
-## Update Python Package
+## Course Outline
 
-经常更新 Python 包，就有一次需要更新很多个包的情况，目前没有一键升级功能
+- From AI to Machine Learning
+- Setup Python Environment
+- Supervised Learning
+- Model Evaluation
+- Unsupervised Learning
+- Face Recognition on Olivetti
+- AI Demo on GPU Device
 
-pip-review 就是为了解决这个问题的第三方包，安装方法如下
+## Basic Requirements
 
-```shell
-pip install pip-review
-```
-
-查看可用更新
-
-```shell
-pip-review
-```
-
-自动批量升级
-
-```shell
-pip-review --auto
-```
-
-以交互方式运行，对每个包进行升级
-
-```shell
-pip-review --interactive
+```console
+jupyter
+numpy
+matplotlib
+scipy
+scikit-learn
+datetime
+openpyxl
+pandas
+mglearn
+graphviz
+seaborn
 ```

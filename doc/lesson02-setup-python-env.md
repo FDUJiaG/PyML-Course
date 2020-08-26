@@ -167,6 +167,34 @@ pip uninstall [package-name]            # 删除名为[package-name]的包
 pip list                                # 列出当前环境下已安装的所有包
 ```
 
+#### Update Python Package
+
+经常更新 Python 包，就有一次需要更新很多个包的情况，目前没有一键升级功能
+
+pip-review 就是为了解决这个问题的第三方包，安装方法如下
+
+```shell
+pip install pip-review
+```
+
+查看可用更新
+
+```shell
+pip-review
+```
+
+自动批量升级
+
+```shell
+pip-review --auto
+```
+
+以交互方式运行，对每个包进行升级
+
+```shell
+pip-review --interactive
+```
+
 #### conda Package Manager
 
 conda 包管理器是 Anaconda 自带的包管理器，可以帮助我们在 conda 环境下轻松地安装各种包，相较于 pip 而言，conda 的通用性更强（不仅是 Python 包，其他包如 CUDA Toolkit 和 cuDNN 也可以安装），但 conda 源的版本更新往往较慢，常用命令如下
