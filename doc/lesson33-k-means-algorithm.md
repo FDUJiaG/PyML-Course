@@ -44,7 +44,7 @@ mglearn.plots.plot_kmeans_algorithm()
 mglearn.plots.plot_kmeans_boundaries()
 ```
 
-![k-Means Steps](figures/l33/l33-k-Means-Boundaries.png)
+![k-Means Boundaries](figures/l33/l33-k-Means-Boundaries.png)
 
 ### Determination of the k-Value
 
